@@ -12,7 +12,7 @@ using Google.Protobuf;
 public class ArenaDataExporter : MonoBehaviour
 {
 
-    [MenuItem("PL War/Export Scene Data")]
+    [MenuItem("CH/Export Scene Data")]
     public static void ExportSceneData()
     {
         var path = @".\MainServer\bin\Debug\scene_data.bin";

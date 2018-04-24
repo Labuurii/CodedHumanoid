@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class ValidateScene : MonoBehaviour {
 
-    [MenuItem("PL War/Validate Scene")]
+    [MenuItem("CH/Validate Scene")]
     static void Validate()
     {
         if(SceneManager.sceneCount > 1)
