@@ -1,0 +1,193 @@
+syntax = "proto3";
+package MainServerV2;
+
+message BasicPlayerInfo {
+	int64 permanent_id = 1;
+	string display_name = 2;
+	bool online = 3;
+}
+
+service MainServiceV2 {
+	rpc Version(VersionAttempt) returns(VersionResult) {}
+
+	rpc Subscribe(SubscriptionAttempt) returns(stream Event) {}
+
+	rpc SendFriendRequest(FriendRequestAttempt) returns(FriendRequestResult) {}
+	rpc AnswerFriendRequest(AnswerFriendRequestAttempt) returns(AnswerFriendRequestResult) {}
+	rpc RemoveFriend(RemoveFriendAttempt) returns(RemoveFriendResult) {}
+
+	rpc IgnorePlayer(IgnorePlayerAttempt) returns(IgnorePlayerResult) {}
+	rpc UnIgnorePlayer(UnIgnorePlayerAttempt) returns(UnIgnorePlayerResult) {}
+
+	rpc InviteToGroup(InviteToGroupAttempt) returns(InviteToGroupResult) {}
+	rpc AnswerGroupInvite(AnswerGroupInviteAttempt) returns(AnswerGroupInviteResult) {}
+	rpc LeaveGroup(LeaveGroupAttempt) returns(LeaveGroupResult) {}
+
+	rpc SendMessage(SendMessageAttempt) returns(SendMessageResult) {}
+
+	rpc Queue(QueueAttempt) returns(QueueResult) {}
+	rpc LeaveQueue(LeaveQueueAttempt) returns(LeaveQueueResult) {}
+}
+
+message VersionAttempt {}
+message VersionResult {
+	string semver_id = 1;
+}
+
+message SubscriptionAttempt {
+	string username = 1;
+	string password = 2;
+}
+message Event {
+	oneof event {
+		Event_LoginResult login_result = 1;
+		Event_FriendRequest friend_request = 2;
+		Event_FriendAcceptedRequest friend_accepted_request = 3;
+		Event_FriendRemovedYou friend_removed_you = 4;
+		Event_FriendOnlineStateChanged friend_online_state_changed = 11;
+		Event_GotGroupInvite got_group_invite = 5;
+		Event_GroupInviteTimedOut group_invite_timed_out = 12;
+		Event_PlayerAnsweredGroupInvite player_answered_group_invite = 6;
+		Event_PlayerLeftGroup player_left_group = 7;
+		Event_ReceivedMessage received_message = 8;
+		Event_GroupQueueStateChanged group_queue_state_changed = 9;
+		Event_GroupDequeued group_dequeued = 10;
+		Event_QueuePopped queue_popped = 13;
+	}
+}
+
+message Event_LoginResult { //TODO: Extended player data
+	bool success = 1;
+	bytes token = 2;
+	repeated BasicPlayerInfo pending_friend_requests_outgoing = 3;
+	repeated BasicPlayerInfo pending_friend_requests_incoming = 4;
+	repeated BasicPlayerInfo friends = 5;
+	repeated BasicPlayerInfo ignored = 6;
+}
+
+message FriendRequestAttempt {
+	int64 player_id = 1;
+}
+message FriendRequestResult {
+	bool is_now_pending = 1;
+}
+message AnswerFriendRequestAttempt {
+	int64 from = 1;
+	bool accepted = 2;
+}
+message AnswerFriendRequestResult {
+	bool now_friend = 1;
+}
+message RemoveFriendAttempt {
+	int64 player_id = 1;
+}
+message RemoveFriendResult {
+	bool no_longer_friend = 1;
+}
+message Event_FriendRequest {
+	BasicPlayerInfo basic_player_info = 1;
+}
+message Event_FriendAcceptedRequest {
+	BasicPlayerInfo player_info = 1;
+}
+message Event_FriendRemovedYou {
+	BasicPlayerInfo player_info = 1;
+} 
+message Event_FriendOnlineStateChanged {
+	int64 player_id = 1;
+	OnlineState online_state = 2;
+}
+enum OnlineState {
+	Offline = 0;
+	Online = 1;
+}
+
+message IgnorePlayerAttempt {
+	int64 player_id = 1;
+}
+message IgnorePlayerResult {
+	bool is_ignored = 1;
+}
+message UnIgnorePlayerAttempt {
+	int64 player_id = 1;
+}
+message UnIgnorePlayerResult {
+	bool is_ignored = 1;
+}
+
+message InviteToGroupAttempt {
+	int64 player_id = 1;
+}
+message InviteToGroupResult {
+	bool invited_to_group = 1;
+}
+message AnswerGroupInviteAttempt {
+	bool accepted = 1;
+}
+message AnswerGroupInviteResult {
+	bool in_group = 1;
+	BasicPlayerInfo leader = 2;
+	repeated BasicPlayerInfo players_in_group = 3;
+}
+message LeaveGroupAttempt {}
+message LeaveGroupResult {}
+message Event_GotGroupInvite {
+	BasicPlayerInfo from_player = 1;
+}
+message Event_PlayerAnsweredGroupInvite {
+	BasicPlayerInfo player = 1;
+	bool Accepted = 2;
+}
+message Event_PlayerLeftGroup {
+	BasicPlayerInfo player_leaving = 1;
+	BasicPlayerInfo new_leader = 2;
+	repeated BasicPlayerInfo current_players = 3;
+}
+message Event_GroupInviteTimedOut {}
+
+message SendMessageAttempt {
+	string msg = 1;
+	oneof target {
+		FriendTarget friend_target = 2;
+		GroupTarget group_target = 3;
+	}
+}
+message FriendTarget {
+	int64 player_id = 1;
+}
+message GroupTarget {}
+message SendMessageResult {
+	bool sent_message = 1;
+}
+enum MessageType {
+	Friend = 0;
+	Group = 1;
+}
+message Event_ReceivedMessage {
+	string msg = 1;
+	MessageType msg_type = 2;
+	BasicPlayerInfo from_player = 3;
+}
+
+message QueueAttempt {
+	MatchMode match_mode = 1;	
+}
+enum MatchMode {
+	BattleRoyale = 0;
+}
+message QueueResult {
+	bool queued = 1;
+}
+message LeaveQueueAttempt {}
+message LeaveQueueResult {
+	bool not_in_queue = 1;
+}
+message Event_GroupQueueStateChanged {
+	bool queued = 1;
+	MatchMode match_mode = 2;
+}
+message Event_GroupDequeued {}
+message Event_QueuePopped {
+	bytes auth_token = 1;
+	string connection_str = 2;
+}

@@ -1,0 +1,51 @@
+syntax = "proto3";
+package ArenaServer;
+
+import "mainserverv2.proto";
+
+message PlayerInfo {
+	bytes auth_token = 1;
+	MainServerV2.BasicPlayerInfo basic_info = 2;
+}
+
+service ArenaHostServicePrivate {
+	rpc CreateArena(CreateArenaAttempt) returns(CreateArenaResult) {}
+	rpc Shutdown(ShutdownAttempt) returns(ShutdownResult) {}
+}
+
+service ArenaServicePrivate {
+	rpc Subscribe(SubscriptionAttempt) returns(stream Event_Arena) {}
+	rpc RemovePlayer(RemovePlayerAttempt) returns(RemovePlayerResult) {}
+}
+
+message CreateArenaAttempt {
+	repeated PlayerInfo player_info = 1;
+}
+message CreateArenaResult {
+	bool success = 1;
+	int32 free_arena_count = 2;
+	string private_connection_str = 3;
+	string public_connection_str = 4; //TODO
+}
+
+message ShutdownAttempt {}
+message ShutdownResult {}
+
+message SubscriptionAttempt {}
+message Event_Arena {
+	oneof event {
+		EventArena_PlayerLeft player_left = 1;
+		EventArena_Shutdown arena_shutdown = 2;
+	}
+}
+message EventArena_PlayerLeft {
+	int64 player_id = 1;
+}
+message EventArena_Shutdown {}
+
+message RemovePlayerAttempt {
+	int64 player_id = 1;
+}
+message RemovePlayerResult {
+	bool is_removed = 1;
+}

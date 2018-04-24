@@ -1,0 +1,2 @@
+protoc --csharp_out="../MainServer/Generated" --grpc_out="../MainServer/Generated" ./arena_services.proto --plugin=protoc-gen-grpc=./grpc_csharp_plugin.exe
+protoc --csharp_out="../Assets/Game/Scripts/Generated" --grpc_out="../Assets/Game/Scripts/Generated" ./arena_services.proto --plugin=protoc-gen-grpc=./grpc_csharp_plugin.exe

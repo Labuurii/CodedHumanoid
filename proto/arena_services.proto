@@ -1,0 +1,149 @@
+syntax = "proto3";
+package arena_services;
+
+message Vector3 {
+	float x = 1;
+	float y = 2;
+	float z = 3;
+}
+
+message Quaternion {
+	float x = 1;
+	float y = 2;
+	float z = 3;
+	float w = 4;
+}
+
+message Transform {
+	Vector3 position = 1;
+	Vector3 velocity = 2;
+	Quaternion rotation = 3;
+	Vector3 angular_velocity = 4;
+}
+
+message Player {
+	string name = 1;
+	string language = 2;
+}
+
+service BaseService {
+	rpc Subscribe(BaseServerSubscriptionAttempt) returns(stream EventBase) {}
+}
+
+service MatchMakerService {
+	rpc Queue(QueueAttempt) returns(QueueStateMsg) {}
+	rpc AnswerMatch(AnswerMatchAttempt) returns(QueueStateMsg) {}
+	rpc LeaveQueue(LeaveQueueAttempt) returns(QueueStateMsg) {}
+	rpc Subscribe(SubscriptionAttempt) returns(stream QueueStateMsg) {}
+}
+
+service ArenaBaseService {
+	rpc Subscribe(SubscriptionAttempt) returns(stream EventArena) {}
+}
+
+service Arena3DService {
+	rpc Subscribe(SubscriptionAttempt) returns(stream Event3D) {}
+}
+
+message SubscriptionAttempt {}
+
+message Event3D {
+	oneof event {
+		Event3D_ObjectTransformChanged object_transform_changed = 1;
+		Event3D_ObjectNotification object_notification = 2;
+	}
+}
+
+message Event3D_ObjectTransformChanged {
+	int32 id = 1;
+	Transform new_transform = 2;
+}
+
+message Event3D_ObjectNotification {
+	int32 id = 1;
+	int32 spawn_id = 2;
+	Transform transform = 3;
+	bool spawn = 4;
+}
+
+message EventMatchMaker_QueuePopped {}
+message EventMatchMaker_QueuePopCancelled {
+	QueuePopCancelled_Reason reason = 1;
+}
+
+enum QueuePopCancelled_Reason {
+	someone_left = 0;
+}
+
+message QueueStateMsg {
+	bool authenticated = 1;
+	QueueState current_state = 3;
+}
+
+enum QueueState {
+	not_queued = 0;
+	queued = 1;
+	queue_popped = 2;
+	awaiting_other_players = 3;
+	arena_joinable = 5;
+	in_arena = 4;
+}
+
+message QueueAttempt {
+	MatchMode match_mode = 1;
+	Arena arena = 2;
+	TeamSize team_size = 3;
+}
+
+enum Arena {
+	none = 0;
+	agar = 1;
+}
+
+enum TeamSize {
+	one = 0;
+	two = 1;
+	three = 2;
+}
+
+enum MatchMode {
+	Skirmish = 0;
+	Ranked = 1;
+}
+
+message AnswerMatchAttempt {
+	bool accepted = 1;
+}
+
+message LeaveQueueAttempt {}
+
+message BaseServerSubscriptionAttempt {
+	string token = 1;
+}
+
+message EventBase {
+	oneof event {
+		EventBase_SubscriptionSuccessful subscription_successful = 1;
+	}
+}
+
+message EventBase_SubscriptionSuccessful {
+	string session_token = 1;
+}
+
+message EventArena {
+	oneof event {
+		EventArena_PlayerDecl player_decl = 1;
+		EventArena_PlayerDisconnected player_dced = 2;
+	}
+}
+
+message EventArena_PlayerDecl {
+	bool left = 1;
+	repeated Player left_players = 2;
+	repeated Player right_players = 3;
+}
+
+message EventArena_PlayerDisconnected {
+	string name = 1;
+}

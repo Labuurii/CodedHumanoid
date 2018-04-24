@@ -1,0 +1,31 @@
+syntax = "proto3";
+package login_services;
+
+service LoginPublicService {
+	rpc ConnectAndLogIn(LogInAttempt) returns(stream Event) {}
+}
+
+message LogInAttempt {
+	string username = 1;
+	string password = 2;
+}
+
+message Event {
+	oneof event {
+		EventLoginResult login_result = 1;
+		ServerDisconnected server_disconnected = 2;
+	}
+}
+
+message EventLoginResult {
+	bool success = 1;
+	string token = 2;
+	repeated Server servers = 3;
+}
+
+message Server {
+	string name = 1;
+	string url = 2;
+}
+
+message ServerDisconnected {}

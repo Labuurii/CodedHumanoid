@@ -1,0 +1,65 @@
+syntax = "proto3";
+package arenadata;
+
+message ArenaData {
+	repeated Actor static_actors = 1;
+	repeated Actor dynamic_actors = 2;
+	repeated Actor spawnable_actors = 3;
+}
+
+message Actor {
+	Transform transform = 1;
+	float mass = 3;
+	bool affected_by_gravity = 4;
+	repeated Collider colliders = 2;
+}
+
+message Collider {
+	oneof shape {
+		BoxShape box = 1;
+		SphereShape sphere = 2;
+		CapsuleShape capsule = 4;
+	}
+	repeated Collider children = 3;
+}
+
+message Vector3 {
+	float x = 1;
+	float y = 2;
+	float z = 3;
+}
+
+message Quaternion {
+	float x = 1;
+	float y = 2;
+	float z = 3;
+	float w = 4;
+}
+
+message Transform {
+	Vector3 position = 1;
+	Vector3 velocity = 2;
+	Quaternion rotation = 3;
+	Vector3 angular_velocity = 4;
+}
+
+message BoxShape {
+	Vector3 center = 1;
+	Quaternion rotation = 5;
+	float width = 2;
+	float height = 3;
+	float length = 4;
+}
+
+message SphereShape {
+	Vector3 center = 1;
+	Quaternion rotation = 3;
+	float radius = 2;
+}
+
+message CapsuleShape {
+	Vector3 center = 1;
+	Quaternion rotation = 2;
+	float radius = 3;
+	float height = 4;
+}

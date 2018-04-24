@@ -1,0 +1,60 @@
+syntax = "proto3";
+package login_services;
+
+service LoginPrivateService {
+	rpc Connect(ConnectionAttempt) returns(stream PrivateEvent) {}
+	rpc TakeOwnership(TakeOwnershipAttempt) returns(TakeOwnershipResult) {}
+	rpc LeaveOwnership(LeaveOwnershipAttempt) returns(LeaveOwnershipResult) {}
+}
+
+message ConnectionAttempt {
+	string app_id = 1;
+	string secret = 2;
+}
+
+message PrivateEvent {
+	oneof event {
+		LoginResult login_result = 1;
+		PlayerDisconnected player_disconnected = 2;
+	}
+}
+
+message LoginResult {
+	bool success = 1;
+	string token = 2;
+}
+
+message PlayerDisconnected {
+	string permanent_id = 1;
+}
+
+message TakeOwnershipAttempt {
+	string player_permanent_id = 1;
+}
+
+message TakeOwnershipResult {
+	Result result = 1;
+	
+	enum Result {
+		success = 0;
+		invalid_player_id = 1;
+		not_auth = 2;
+		already_has_owner = 3;
+		already_owned_by_server = 4;
+	}
+}
+
+message LeaveOwnershipAttempt {
+	string player_permanent_id = 1;
+}
+
+message LeaveOwnershipResult {
+	Result result = 1;
+	
+	enum Result {
+		Success = 0;
+		invalid_player_id = 1;
+		not_auth = 2;
+		no_owner = 3;
+	}
+}

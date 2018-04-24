@@ -1,0 +1,29 @@
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/Assets/AssetStoreTools*
+
+# Visual Studio cache directory
+/.vs/
+
+# Unity3D generated meta files
+*.pidb.meta
+*.pdb.meta
+
+# Unity3D Generated File On Crash Reports
+sysinfo.txt
+
+Interesting People.txt
+
+# C# build dirs and unity build dir
+bin/
+obj/
+
+# Nuget cache
+packages
+
+# Other
+/ScreenShots
+/TestResults
