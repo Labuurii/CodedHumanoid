@@ -18,7 +18,6 @@ namespace ArenaHost
 
             var config = new Config
             {
-                GameVersion = "0.0.1",
                 GroupInviteTimeoutSec = 30,
                 MaxFriendRequestSize = 200,
                 MaxFriendSize = 500,
