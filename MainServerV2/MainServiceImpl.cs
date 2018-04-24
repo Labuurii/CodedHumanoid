@@ -747,7 +747,8 @@ namespace ArenaHost
             this.config = config;
             cached_version_result = new VersionResult
             {
-                SemverId = config.GameVersion
+                SemverId = config.GameVersion,
+				BuildNumber = config.GameBuildNumber
             };
         }
     }
