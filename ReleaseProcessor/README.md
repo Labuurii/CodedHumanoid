@@ -20,7 +20,7 @@ The functionality below has to be taken into account when implementing a new tar
 - Copy zerobrane files to target dir: Done
 - Cloud build
 - Local build
-- Write manifest info to the client and server builds
+- Write manifest info to the client and server builds: Done
 
 ## Requirements
 - dmd >= 2.078

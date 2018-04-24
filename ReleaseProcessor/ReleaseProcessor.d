@@ -5,6 +5,8 @@ import std.exception;
 import std.path;
 import std.stdio : writeln, File;
 import std.format;
+import std.regex;
+import std.conv : to;
 
 enum ProcessStage {
 	PreProcess,
@@ -49,6 +51,11 @@ void pre_process(string[] args) {
 	immutable manifest_path = release_processor_path ~ "/manifest.txt";
 	enum manifest_format = "last_release_number %s; last_release_semver %s";
 	
+	immutable client_scripts_path = "Assets/Game/Scripts";
+	immutable client_version_data_script_path = client_scripts_path ~ "/GameVersionData.cs";
+	
+	immutable main_server_v2_version_data_path = "MainServerV2/Config.cs";
+	
 	Manifest manifest;
 	{
 		auto manifest_string = readText!string(manifest_path);
@@ -58,14 +65,44 @@ void pre_process(string[] args) {
 	++manifest.build_number;
 	writeln("New build manifest:");
 	writeln(manifest);
+	writeln();
 	
-	//TODO: Insert the manifest info into both the server and client builds
+	writeln("New client version data:");
+	change_version_data_of_file(client_version_data_script_path,
+		regex("SemVerVersion *= *\"[0-9.,]*\""),
+		regex("BuildNumber *= *[0-9]+"),
+		"SemVerVersion = \"" ~ manifest.semver_string ~ "\"",
+		"BuildNumber = " ~ manifest.build_number.to!string
+	);
+	writeln();
+	writeln("New server version data:");
+	change_version_data_of_file(main_server_v2_version_data_path,
+		regex("GameVersion *= *\"[0-9.,]+\""),
+		regex("GameBuildNumber *= *[0-9]+"),
+		"GameVersion = \"" ~ manifest.semver_string ~ "\"",
+		"GameBuildNumber = " ~ manifest.build_number.to!string
+	);
+	writeln();
 	
 	{
 		auto manifest_fd = File(manifest_path, "w");
 		manifest_fd.lockingTextWriter
 			.formattedWrite!manifest_format(manifest.build_number, manifest.semver_string);
 	}
+}
+
+void change_version_data_of_file(string file, 
+	Regex!char semver_regex, 
+	Regex!char build_num_regex, 
+	string semver_replacement, 
+	string build_num_replacement)
+{
+	auto client_version_text = readText!string(file);
+	auto new_client_version_text = replaceFirst(client_version_text, semver_regex, semver_replacement);
+	new_client_version_text = replaceFirst(new_client_version_text, build_num_regex, build_num_replacement);
+	
+	writeln(new_client_version_text);
+	write(file, new_client_version_text);
 }
 
 //TODO: Actual build step
