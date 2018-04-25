@@ -1,10 +1,26 @@
-Tool for downloading the next sucessful unity cloudbuild and then process according to debug or release procedure.
+Tool for downloading the next sucessful unity cloudbuild.
 
-## Updating to new Rest API version
-This tool makes use of Swagger for the interfacing with the Unity Online Services REST API.
-Therefore run swagger cli on the unity_rest_api.json file and output it to UnityRestApi directory
-to regenerate the Swagger interface. Eg:
->> java -jar D:/swagger/swagger-codegen-cli-2.3.1.jar generate -i https://build-api.cloud.unity3d.com/api/v1/api.json -l csharp -o ./UnityRestApi
+## Setup
+For this program to work a Unity Online Services access token is required.
+That token has to be placed in a file named 'unity_access_token.txt'.
+Then the program can be launched.
 
-To get the new swagger file it is documented under https://build-api.cloud.unity3d.com/docs/1.0.0/index.html#clients
-on the unity rest api docs.
+## Usage
+From any directory run the debug build.
+This will cause the program to wait for a new successful unity cloud build.
+When the build is complete the build will be downloaded and unzipped. 
+Eg if launched from this directory:
+>> ./CloudBuildDownloader/bin/Debug/CloudBuildDownloader.exe --build_mode=Debug --build_name="win64-debug" --platform=Windows
+
+## Command line arguments
+
+* --build_mode
+	* options: Debug, Release
+	* Downloads to the debug_bin or release_bin directory respectively
+* --build_name
+	* string
+	* The identifier unity uses for the build type
+* --platform
+	* options: Windows
+	* The platform for which the build was made.
+	* Affects which sub directory the build is put in.
