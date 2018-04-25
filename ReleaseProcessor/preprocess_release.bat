@@ -1,0 +1,1 @@
+dmd -debug -g -run ReleaseProcessor.d --stage=PreProcess
