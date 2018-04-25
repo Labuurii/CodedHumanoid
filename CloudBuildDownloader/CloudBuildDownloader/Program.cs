@@ -45,14 +45,6 @@ namespace CloudBuildDownloader
                 .WithParsed((options) => run_program(options))
                 .WithNotParsed((errors) =>
                 {
-                    var sb = new StringBuilder();
-                    sb.AppendLine("Error parsing command line arguments...");
-                    foreach(var e in errors)
-                    {
-                        sb.AppendLine(e.Tag.ToString());
-                    }
-                    Console.WriteLine(sb.ToString());
-                    Console.ReadLine();
                 });
         }
 
