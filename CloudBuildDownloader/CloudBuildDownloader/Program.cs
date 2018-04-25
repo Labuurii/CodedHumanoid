@@ -65,25 +65,41 @@ namespace CloudBuildDownloader
             if (builds == null || builds.Count == 0)
                 throw new Exception(string.Format("Either there have not been any successful builds or the --build_name {0} does not exist", options.build_name));
             var latest_build = get_latest(builds);
-
             Console.WriteLine("Got latest build with build number " + latest_build.build);
-            for (; ; )
+
+            switch(options.build_mode)
             {
-                Thread.Sleep(1000 * 10); //10 seconds
-                Console.WriteLine();
-                Console.WriteLine("Checks for a new build...");
-                builds = get_latest_debug_builds(c, options.project_name, options.build_name);
-                var new_latest_build = get_latest(builds);
-                if (new_latest_build.build > latest_build.build)
-                {
-                    process_new_build(out_dir, new_latest_build);
+                case BuildMode.Debug:
+                    {
+                        for (; ; )
+                        {
+                            Thread.Sleep(1000 * 10); //10 seconds
+                            Console.WriteLine();
+                            Console.WriteLine("Checks for a new build...");
+                            builds = get_latest_debug_builds(c, options.project_name, options.build_name);
+                            var new_latest_build = get_latest(builds);
+                            if (new_latest_build.build > latest_build.build)
+                            {
+                                process_new_build(out_dir, new_latest_build);
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Found no new build.");
+                            }
+                        }
+                    }
                     break;
-                }
-                else
-                {
-                    Console.WriteLine("Found no new build.");
-                }
+                case BuildMode.Release:
+                    {
+                        process_new_build(out_dir, latest_build);
+                    }
+                    break;
+                default:
+                    throw new Exception("Unhandled enum value " + options.build_mode);
             }
+
+            
         }
 
         private static void process_new_build(string out_dir, Build new_latest_build)
