@@ -1,9 +1,0 @@
-# IO.Swagger.Model.OrgsorgidprojectsprojectidbuildtargetsSettingsAdvancedUnityEditorUserBuildSettings
-## Properties
-
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**AndroidBuildSystem** | **string** | which android build system to build with (android only, supported in Unity 5.5+) | [optional] 
-
-[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
-

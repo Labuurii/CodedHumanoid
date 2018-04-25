@@ -23,6 +23,9 @@ obj/
 
 # Nuget cache
 packages
+CloudBuildDownloader/packages
+CloudBuildDownloader/System.*
+CloudBuildDownloader/unity_access_token.txt
 
 # Other
 /ScreenShots
