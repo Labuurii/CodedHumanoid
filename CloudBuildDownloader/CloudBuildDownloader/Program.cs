@@ -59,7 +59,7 @@ namespace CloudBuildDownloader
             var c = new UnityClient(token);
 
             Console.WriteLine("Gets latest successful builds...");
-            List<Build> builds = get_latest_win64_debug_builds(c, options.build_name);
+            List<Build> builds = get_latest_debug_builds(c, options.build_name);
             if (builds == null || builds.Count == 0)
                 throw new Exception(string.Format("Either there have not been any successful builds or the --build_name {0} does not exist", options.build_name));
             var latest_build = get_latest(builds);
@@ -70,7 +70,7 @@ namespace CloudBuildDownloader
                 Thread.Sleep(1000 * 10); //10 seconds
                 Console.WriteLine();
                 Console.WriteLine("Checks for a new build...");
-                builds = get_latest_win64_debug_builds(c, options.build_name);
+                builds = get_latest_debug_builds(c, options.build_name);
                 var new_latest_build = get_latest(builds);
                 if (new_latest_build.build > latest_build.build)
                 {
@@ -165,7 +165,7 @@ namespace CloudBuildDownloader
             return new RestClient(url).DownloadData(new RestRequest(method), true);
         }
 
-        private static List<Build> get_latest_win64_debug_builds(UnityClient c, string build_name)
+        private static List<Build> get_latest_debug_builds(UnityClient c, string build_name)
         {
             return c.GetLatestSuccessfulBuildOf("adapt-alliance-gamestudio", "pl-war", build_name);
         }
