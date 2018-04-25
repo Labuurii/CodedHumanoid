@@ -6,7 +6,7 @@
 /Assets/AssetStoreTools*
 
 # Visual Studio cache directory
-/.vs/
+.vs/
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -28,3 +28,4 @@ packages
 /ScreenShots
 /TestResults
 /release_bin
+/debug_bin

@@ -1,0 +1,46 @@
+# IO.Swagger.Model.OrgsorgidprojectsprojectidbuildtargetsBuilds
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**Build** | **decimal?** |  | [optional] 
+**Buildtargetid** | **string** | unique id auto-generated from the build target name | [optional] 
+**BuildTargetName** | **string** |  | [optional] 
+**BuildGUID** | **string** | unique GUID identifying this build | [optional] 
+**BuildStatus** | **string** |  | [optional] 
+**FailureDetails** | [**List&lt;OrgsorgidprojectsprojectidbuildtargetsFailureDetails&gt;**](OrgsorgidprojectsprojectidbuildtargetsFailureDetails.md) | list of failure details for this build attempt, when available | [optional] 
+**CanceledBy** | **string** |  | [optional] 
+**Platform** | **string** |  | [optional] 
+**WorkspaceSize** | **decimal?** | size of workspace in bytes | [optional] 
+**Created** | **string** | when the build was created | [optional] 
+**Finished** | **string** | when the build completely finished | [optional] 
+**CheckoutStartTime** | **string** | when the build starting checking out code | [optional] 
+**CheckoutTimeInSeconds** | **decimal?** | amount of time spent checking out code | [optional] 
+**BuildStartTime** | **string** | when the build started compiling | [optional] 
+**BuildTimeInSeconds** | **decimal?** | amount of time spend compiling | [optional] 
+**PublishStartTime** | **string** | when the build started saving build artifacts | [optional] 
+**PublishTimeInSeconds** | **decimal?** | amount of time spent saving build artifacts | [optional] 
+**TotalTimeInSeconds** | **decimal?** | total time for the build | [optional] 
+**LastBuiltRevision** | **string** | source control commit id for the build | [optional] 
+**Changeset** | **List&lt;Object&gt;** | a list of source control changes between this and the last build | [optional] 
+**Favorited** | **bool?** | if the build is marked as do not delete or not | [optional] 
+**Label** | **string** | description given when a build is favorited | [optional] 
+**Deleted** | **bool?** | if the build is deleted or not | [optional] 
+**DeletedBy** | **string** | email address of the user who deleted this attempt | [optional] 
+**QueuedReason** | **string** | reason the build is currently waiting | [optional] 
+**CooldownDate** | **string** | time until this build will be reconsidered for building | [optional] 
+**ScmBranch** | **string** | scm branch to be built | [optional] 
+**UnityVersion** | **string** | &#39;latest&#39; or a unity dot version with underscores (ex. &#39;4_6_5&#39;) | [optional] 
+**XcodeVersion** | **string** | &#39;latest&#39; or a supported xcode version (ex. &#39;xcode7&#39;) | [optional] 
+**AuditChanges** | **decimal?** |  | [optional] 
+**ProjectVersion** | [**OrgsorgidprojectsprojectidbuildtargetsProjectVersion**](OrgsorgidprojectsprojectidbuildtargetsProjectVersion.md) |  | [optional] 
+**ProjectName** | **string** |  | [optional] 
+**ProjectId** | **string** |  | [optional] 
+**OrgId** | **string** |  | [optional] 
+**OrgFk** | **string** |  | [optional] 
+**Links** | **Object** |  | [optional] 
+**TestResults** | [**OrgsorgidprojectsprojectidbuildtargetsTestResults**](OrgsorgidprojectsprojectidbuildtargetsTestResults.md) |  | [optional] 
+**Error** | **string** |  | [optional] 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
