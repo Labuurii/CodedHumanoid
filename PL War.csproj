@@ -376,6 +376,7 @@
     <Compile Include="Assets\Game\Scripts\EquipmentController.cs" />
     <Compile Include="Assets\Game\Scripts\FileOps.cs" />
     <Compile Include="Assets\Game\Scripts\FreeForAllNetManager.cs" />
+    <Compile Include="Assets\Game\Scripts\GameVersionData.cs" />
     <Compile Include="Assets\Game\Scripts\Generated\Arenadata.cs" />
     <Compile Include="Assets\Game\Scripts\Generated\ArenaServices.cs" />
     <Compile Include="Assets\Game\Scripts\Generated\ArenaServicesGrpc.cs" />
