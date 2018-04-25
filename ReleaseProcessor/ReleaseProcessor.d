@@ -13,12 +13,20 @@ enum ProcessStage {
 	PostProcess
 }
 
+enum BuildMode {
+	Invalid,
+	Debug,
+	Release
+}
+
 void main(string[] args) {
 	ProcessStage stage;
+	BuildMode build_mode;
 
 	{
 		auto get_opt_res = getopt(args, config.passThrough,
-			config.required, "stage", &stage);
+			config.required, "stage", &stage,
+			"build_mode", &build_mode);
 			
 		if(get_opt_res.helpWanted)
 		{
@@ -34,7 +42,7 @@ void main(string[] args) {
 			pre_process();
 			break;
 		case PostProcess:
-			post_process();
+			post_process(build_mode);
 			break;
 	}
 }
@@ -104,7 +112,7 @@ void change_version_data_of_file(string file,
 	write(file, new_client_version_text);
 }
 
-void post_process() {
+void post_process(BuildMode build_mode) {
 	immutable zerobrane_name = "zerobrane";
 	immutable zerobrane_windows_name = zerobrane_name ~ "_windows";
 	
@@ -113,10 +121,23 @@ void post_process() {
 	immutable release_dir = "release_bin";
 	immutable release_dir_windows = release_dir ~ "/windows";
 	
-	if(!release_dir_windows.exists)
-		release_dir_windows.mkdir;
+	immutable debug_dir = "debug_bin";
+	immutable debug_dir_windows = debug_dir ~ "/windows";
 	
-	auto out_zero_brane_windows_path = buildPath(release_dir_windows, zerobrane_windows_name);
+	string bin_dir;
+	with(BuildMode) final switch(build_mode) {
+		case Invalid:
+			throw new Exception("Build mode is not specified");
+		case Debug:
+			bin_dir = debug_dir_windows; break;
+		case Release:
+			bin_dir = release_dir_windows; break;
+	}
+	
+	if(!bin_dir.exists)
+		bin_dir.mkdir;
+	
+	auto out_zero_brane_windows_path = buildPath(bin_dir, zerobrane_windows_name);
 	copy_dir(zero_brane_windows, out_zero_brane_windows_path);
 }
 
