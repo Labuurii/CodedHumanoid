@@ -9,7 +9,7 @@ namespace ArenaHost
     internal struct Config
     {
         internal const string GameVersion = "0.1";
-		internal const int GameBuildNumber = 7;
+		internal const int GameBuildNumber = 8;
 
         internal int MaxFriendSize;
         internal int MaxFriendRequestSize;
