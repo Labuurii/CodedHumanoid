@@ -22,7 +22,6 @@ void main(string[] args) {
 			
 		if(get_opt_res.helpWanted)
 		{
-			//TODO: Display info about all options. This is not adequate.
 			defaultGetoptPrinter("ReleaseProcessor is here to automate the process of doing releases.", get_opt_res.options);
 			return;
 		}
@@ -32,10 +31,10 @@ void main(string[] args) {
 	
 	with(ProcessStage) final switch(stage) {
 		case PreProcess:
-			pre_process(args);
+			pre_process();
 			break;
 		case PostProcess:
-			post_process(args);
+			post_process();
 			break;
 	}
 }
@@ -46,7 +45,7 @@ public:
 	string semver_string;
 }
 
-void pre_process(string[] args) {
+void pre_process() {
 	immutable release_processor_path = "./ReleaseProcessor";
 	immutable manifest_path = release_processor_path ~ "/manifest.txt";
 	enum manifest_format = "last_release_number %s; last_release_semver %s";
@@ -105,9 +104,7 @@ void change_version_data_of_file(string file,
 	write(file, new_client_version_text);
 }
 
-//TODO: Actual build step
-
-void post_process(string[] args) {
+void post_process() {
 	immutable zerobrane_name = "zerobrane";
 	immutable zerobrane_windows_name = zerobrane_name ~ "_windows";
 	
