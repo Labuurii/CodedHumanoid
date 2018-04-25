@@ -10,7 +10,7 @@ From any directory run the debug build.
 This will cause the program to wait for a new successful unity cloud build.
 When the build is complete the build will be downloaded and unzipped. 
 Eg if launched from this directory:
->> ./CloudBuildDownloader/bin/Debug/CloudBuildDownloader.exe --build_mode=Debug --build_name="win64-debug" --platform=Windows
+>> ./CloudBuildDownloader/bin/Debug/CloudBuildDownloader.exe --build_mode=Debug --build_name="win64-debug" --platform=Windows --project_name="coded-humanoid"
 
 ## Command line arguments
 
@@ -24,3 +24,7 @@ Eg if launched from this directory:
 	* options: Windows
 	* The platform for which the build was made.
 	* Affects which sub directory the build is put in.
+* --project_name
+	* string
+	* The online name of the project on the Unity Online Services website.
+	* Note names like 'Coded Humanoid' are turned into 'coded-humanoid'
