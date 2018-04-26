@@ -397,6 +397,7 @@
     <Compile Include="Assets\Game\Scripts\LoadSceneOnClick.cs" />
     <Compile Include="Assets\Game\Scripts\LocalNavMeshNetworkProxy.cs" />
     <Compile Include="Assets\Game\Scripts\LocalPlayerCamera.cs" />
+    <Compile Include="Assets\Game\Scripts\LogController.cs" />
     <Compile Include="Assets\Game\Scripts\LoginButton.cs" />
     <Compile Include="Assets\Game\Scripts\LoginClientLL.cs" />
     <Compile Include="Assets\Game\Scripts\LoopingPlayerScriptEnv.cs" />
@@ -417,6 +418,7 @@
     <Compile Include="Assets\Game\Scripts\SaveLibraryAndLanguage.cs" />
     <Compile Include="Assets\Game\Scripts\SpawnMaster.cs" />
     <Compile Include="Assets\Game\Scripts\StatusText.cs" />
+    <Compile Include="Assets\Game\Scripts\TextOps.cs" />
     <Compile Include="Assets\Game\Scripts\WaterDecl.cs" />
     <Compile Include="Assets\Game\Scripts\WeaponController.cs" />
     <Compile Include="Assets\Game\Scripts\VectorOps.cs" />

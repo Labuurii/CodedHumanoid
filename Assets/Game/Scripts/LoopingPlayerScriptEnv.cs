@@ -411,12 +411,14 @@ public class LoopingPlayerScriptEnv : NetworkBehaviour {
 
     void run_env()
     {
+		Script.DefaultOptions.DebugPrint = (s) => MainThreadEventQueue.Enqueue(() => LogController.Instance?.Log(s));
+		
         var engine = new Script();
         var cancel_token = cancel_source.Token;
 
         var ud_v3 = UserData.RegisterType(typeof(Vector3));
         var ud_q = UserData.RegisterType(typeof(Quaternion));
-        var ud_debug = UserData.RegisterType(typeof(UnityEngine.Debug));
+		
         UserData.RegisterType(typeof(PlayerState));
         UserData.RegisterType(typeof(EnvState));
         UserData.RegisterType(typeof(Weapon));
@@ -430,6 +432,9 @@ public class LoopingPlayerScriptEnv : NetworkBehaviour {
 
             try
             {
+				if (cancel_token.IsCancellationRequested)
+                    break;
+				
                 var local_snapshot = current_snapshot; //Really important local_* is used instead of snapshot here. Basicly the state is viewed as consumed from here on.
                 var local_ps = local_snapshot.player_state;
                 var local_env = local_snapshot.env_state;
@@ -437,7 +442,6 @@ public class LoopingPlayerScriptEnv : NetworkBehaviour {
                 engine.Globals["vector3"] = UserData.CreateStatic(ud_v3);
                 engine.Globals["quaternion"] = UserData.CreateStatic(ud_q);
                 engine.Globals["WEAPON_TYPE"] = UserData.CreateStatic(ud_weapon_type);
-                engine.Globals["debug"] = UserData.CreateStatic(ud_debug); //TODO: Remove this in production
                 engine.Globals["player"] = local_ps;
                 engine.Globals["environment"] = local_env;
 
@@ -456,61 +460,60 @@ public class LoopingPlayerScriptEnv : NetworkBehaviour {
                     if(local_ps.equipped_weapon != null)
                     {
                         local_ps.use_weapon = false;
-                        MainThreadEventQueue.Enqueue(() => equipment_controller.CmdUseWeapon());
+                        MainThreadEventQueue.Enqueue(() => equipment_controller?.CmdUseWeapon());
                     }
                 }
                 if(local_ps.weapon_to_pick_up != null) //PickUpWeapon
                 {
                     var weapon = local_ps.weapon_to_pick_up;
                     local_ps.weapon_to_pick_up = null;
-                    MainThreadEventQueue.Enqueue(() => bag.PickUp(weapon.controller)); //TODO: Error message: weapon already picked up or owned by other
+                    MainThreadEventQueue.Enqueue(() => bag?.PickUp(weapon.controller)); //TODO: Error message: weapon already picked up or owned by other
                 }
                 if(local_ps.weapon_to_drop != null) //DropWeapon
                 {
                     var weapon = local_ps.weapon_to_drop;
                     local_ps.weapon_to_drop = null;
-                    MainThreadEventQueue.Enqueue(() => bag.Drop(weapon.controller)); //TODO: Error message: weapon not ours
+                    MainThreadEventQueue.Enqueue(() => bag?.Drop(weapon.controller)); //TODO: Error message: weapon not ours
                 }
                 if(local_ps.weapon_to_equip != null) //EquipWeapon
                 {
                     var weapon = local_ps.weapon_to_equip;
                     local_ps.weapon_to_equip = null;
-                    MainThreadEventQueue.Enqueue(() => equipment_controller.EquipWeapon(weapon.controller)); //TODO: Error message: weapon not picked up
+                    MainThreadEventQueue.Enqueue(() => equipment_controller?.EquipWeapon(weapon.controller)); //TODO: Error message: weapon not picked up
                 }
                 if(local_ps.new_rotation.HasValue) //Aim
                 {
                     var rot = local_ps.new_rotation.Value;
                     local_ps.new_rotation = null;
-                    MainThreadEventQueue.Enqueue(() => rotator.CmdSetRotation(rot));
+                    MainThreadEventQueue.Enqueue(() => rotator?.CmdSetRotation(rot));
                 }
 
                 timer.WaitUntilNextFrame();
-                if (cancel_token.IsCancellationRequested)
-                    break;
             } catch(SyntaxErrorException e)
             {
-                UnityEngine.Debug.Log(e.DecoratedMessage);
-                wait_until_new_code_has_been_submitted(timer);
+				MainThreadEventQueue.Enqueue(() => LogController.Instance?.Log(e.DecoratedMessage));
+                wait_until_new_code_has_been_submitted(timer, cancel_token);
             } catch(ScriptRuntimeException e)
             {
-                UnityEngine.Debug.Log(e.DecoratedMessage);
-                wait_until_new_code_has_been_submitted(timer);
+                MainThreadEventQueue.Enqueue(() => LogController.Instance?.Log(e.DecoratedMessage));
+                wait_until_new_code_has_been_submitted(timer, cancel_token);
             } catch (Exception e)
             {
                 UnityEngine.Debug.LogError(e);
-                wait_until_new_code_has_been_submitted(timer);
+				MainThreadEventQueue.Enqueue(() => LogController.Instance?.Log(e.Message));
+                wait_until_new_code_has_been_submitted(timer, cancel_token);
             }
         }
 
         UnityEngine.Debug.Log("Ended running scripts");
     }
 
-    private void wait_until_new_code_has_been_submitted(CyclicTimer timer)
+    private void wait_until_new_code_has_been_submitted(CyclicTimer timer, CancellationToken cancel_token)
     {
         for (; ; )
         {
             timer.WaitUntilNextFrame();
-            if (has_new_code_been_submitted())
+            if (has_new_code_been_submitted() || cancel_token.IsCancellationRequested)
             {
                 break;
             }

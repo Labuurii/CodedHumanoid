@@ -2834,14 +2834,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ElevationDataDistance: 5
-  Code: "if player.equipped_weapon then\r\n  debug.Log(\"Uses weapon\")\r\n  player.UseWeapon()\r\nelseif
-    #player.weapons_in_inventory > 0 then\r\n  debug.Log(\"Equips weapon\")\r\n  player.EquipWeapon(player.weapons_in_inventory[1])\r\nelse\r\n
-    \ local weapons = environment.weapons\r\n  local closest_weapon = nil\r\n  local
-    closest_distance = 10000\r\n  for i, w in pairs(weapons) do \r\n    local d =
-    vector3.Distance(player.position, w.position)\r\n    if d < closest_distance then\r\n
-    \     closest_weapon = w\r\n      closest_distance = d\r\n    end\r\n  end\r\n\r\n
-    \ if closest_weapon then\r\n    debug.Log(\"Found weapon\")\r\n    player.SetDestination(closest_weapon.position)\r\n\r\n
-    \   player.PickUpWeapon(closest_weapon)\r\n  end\r\nend\r\n"
+  Code: "if #environment.other_players > 0 then\r\n  local target = environment.other_players[1]\r\n
+    \ aim_at(target.position)\r\nend\r\n\r\nfunction aim_at(v3)\r\n  local dir = direction_between(player.position,
+    v3)\r\n  player.aim(dir)\r\nend\r\n\r\nfunction direction_between(from, target)\r\n
+    \ local dir = (target - from).normalized\r\n  return dir\r\nend\r\n"
   NewCodeHasBeenSubmitted: 1
   OnEditorOpen:
     m_PersistentCalls:
